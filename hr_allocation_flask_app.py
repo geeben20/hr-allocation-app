@@ -21,12 +21,14 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
-import os
+
+# Database configuration for production
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///hr_alloc.db')
-if database_url.startswith("postgres://"): 
+if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 # --- Models ---
@@ -83,11 +85,9 @@ class Resource(db.Model):
             'currentProject': self.current_project
         }
 
-# --- Helpers ---
+# --- Database Initialization ---
 def init_db():
-    """Initialize the database and seed with sample data.
-    This runs inside the Flask application context to avoid "working outside of application context" errors.
-    """
+    """Initialize the database and seed with sample data."""
     with app.app_context():
         db.create_all()
         # Create a default user and some sample projects/resources if they don't exist
@@ -97,14 +97,15 @@ def init_db():
         if not Project.query.first():
             p1 = Project(name='E-commerce Platform', manager='John Doe', start_date=datetime(2023,3,15).date(), end_date=datetime(2023,9,30).date(), status='active')
             p2 = Project(name='Mobile Banking App', manager='Michael Chen', start_date=datetime(2023,5,1).date(), end_date=datetime(2023,11,15).date(), status='active')
-            p3 = Project(name='CRM System', manager='Maximum', start_date=datetime(2023,1,10).date(), end_date=datetime(2023,7,31).date(), status='completed')
+            p3 = Project(name='CRM System', manager='Emily Rodriguez', start_date=datetime(2023,1,10).date(), end_date=datetime(2023,7,31).date(), status='completed')
             db.session.add_all([p1,p2,p3])
         if not Resource.query.first():
             r1 = Resource(name='Sarah Johnson', position='Project Manager', availability=0, current_project='E-commerce Platform')
             r2 = Resource(name='Michael Chen', position='Senior Developer', availability=20, current_project='Mobile Banking App')
-            r3 = Resource(name='Maximum', position='UX Designer', availability=0, current_project='CRM System')
+            r3 = Resource(name='Emily Rodriguez', position='UX Designer', availability=0, current_project='CRM System')
             db.session.add_all([r1,r2,r3])
         db.session.commit()
+        print("Database initialized successfully!")
 
 # --- Routes / API ---
 @app.route('/')
@@ -346,7 +347,6 @@ HOME_HTML = r"""
 </body>
 </html>
 """
-
 
 # Dashboard HTML: Modern dashboard with full navigation and separate pages
 DASH_HTML = r"""
@@ -924,7 +924,7 @@ DASH_HTML = r"""
       transform: translateY(0);
     }
 
-        /* Modal Styles */
+    /* Modal Styles */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -1112,7 +1112,7 @@ DASH_HTML = r"""
               <h1 class="page-title">Projects</h1>
               <p class="page-subtitle">Manage and track all your projects in one place</p>
             </div>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" id="new-project-btn">
               <i class="fas fa-plus"></i>
               New Project
             </button>
@@ -1157,7 +1157,7 @@ DASH_HTML = r"""
               <h1 class="page-title">Team Resources</h1>
               <p class="page-subtitle">Manage your team members and their allocations</p>
             </div>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" id="new-resource-btn">
               <i class="fas fa-user-plus"></i>
               Add Resource
             </button>
@@ -1206,7 +1206,7 @@ DASH_HTML = r"""
               <h1 class="page-title">Reports & Analytics</h1>
               <p class="page-subtitle">Generate and view detailed reports</p>
             </div>
-            <button class="btn btn-success">
+            <button class="btn btn-success" id="export-report-btn">
               <i class="fas fa-download"></i>
               Export Report
             </button>
@@ -1241,7 +1241,7 @@ DASH_HTML = r"""
     </div>
   </div>
 
-    <script>
+  <script>
     // DOM Elements
     const pages = {
       dashboard: document.getElementById('dashboard-page'),
@@ -1498,7 +1498,7 @@ DASH_HTML = r"""
 
     // Add New Project Functionality
     function setupNewProjectButton() {
-      const newProjectBtn = document.querySelector('#projects-page .btn-primary');
+      const newProjectBtn = document.getElementById('new-project-btn');
       if (newProjectBtn) {
         newProjectBtn.addEventListener('click', showNewProjectModal);
       }
@@ -1640,7 +1640,7 @@ DASH_HTML = r"""
 
     // Add New Resource Functionality
     function setupNewResourceButton() {
-      const newResourceBtn = document.querySelector('#resources-page .btn-primary');
+      const newResourceBtn = document.getElementById('new-resource-btn');
       if (newResourceBtn) {
         newResourceBtn.addEventListener('click', showNewResourceModal);
       }
@@ -1758,7 +1758,7 @@ DASH_HTML = r"""
 
     // Export Report Functionality
     function setupExportReportButton() {
-      const exportBtn = document.querySelector('#reports-page .btn-success');
+      const exportBtn = document.getElementById('export-report-btn');
       if (exportBtn) {
         exportBtn.addEventListener('click', showExportModal);
       }
@@ -2011,11 +2011,40 @@ DASH_HTML = r"""
 </html>
 """
 
-def create_app():
-    with app.app_context():
-        init_db()
-    return app
-
+# Initialize database and run app
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Initialize database
+    with app.app_context():
+        db.create_all()
+        # Create default data if it doesn't exist
+        if not User.query.first():
+            u = User(name='John Doe', email='john@example.com', 
+                    password_hash=generate_password_hash('password'), 
+                    position='Project Manager')
+            db.session.add(u)
+        if not Project.query.first():
+            p1 = Project(name='E-commerce Platform', manager='John Doe', 
+                        start_date=datetime(2023,3,15).date(), 
+                        end_date=datetime(2023,9,30).date(), status='active')
+            p2 = Project(name='Mobile Banking App', manager='Michael Chen', 
+                        start_date=datetime(2023,5,1).date(), 
+                        end_date=datetime(2023,11,15).date(), status='active')
+            p3 = Project(name='CRM System', manager='Emily Rodriguez', 
+                        start_date=datetime(2023,1,10).date(), 
+                        end_date=datetime(2023,7,31).date(), status='completed')
+            db.session.add_all([p1,p2,p3])
+        if not Resource.query.first():
+            r1 = Resource(name='Sarah Johnson', position='Project Manager', 
+                         availability=0, current_project='E-commerce Platform')
+            r2 = Resource(name='Michael Chen', position='Senior Developer', 
+                         availability=20, current_project='Mobile Banking App')
+            r3 = Resource(name='Emily Rodriguez', position='UX Designer', 
+                         availability=0, current_project='CRM System')
+            db.session.add_all([r1,r2,r3])
+        db.session.commit()
+        print("Database initialized successfully!")
+    
+    # Run the app
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Starting server on port {port}...")
+    app.run(host='0.0.0.0', port=port, debug=False)
