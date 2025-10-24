@@ -92,17 +92,17 @@ def init_db():
         db.create_all()
         # Create a default user and some sample projects/resources if they don't exist
         if not User.query.first():
-            u = User(name='John Doe', email='john@example.com', password_hash=generate_password_hash('password'), position='Project Manager')
+            u = User(name='Babafemi Oyindamola', email='john@example.com', password_hash=generate_password_hash('password'), position='Project Manager')
             db.session.add(u)
         if not Project.query.first():
-            p1 = Project(name='E-commerce Platform', manager='John Doe', start_date=datetime(2023,3,15).date(), end_date=datetime(2023,9,30).date(), status='active')
-            p2 = Project(name='Mobile Banking App', manager='Michael Chen', start_date=datetime(2023,5,1).date(), end_date=datetime(2023,11,15).date(), status='active')
-            p3 = Project(name='CRM System', manager='Emily Rodriguez', start_date=datetime(2023,1,10).date(), end_date=datetime(2023,7,31).date(), status='completed')
+            p1 = Project(name='E-commerce Platform', manager='Babafemi Oyindamola', start_date=datetime(2023,3,15).date(), end_date=datetime(2023,9,30).date(), status='active')
+            p2 = Project(name='Mobile Banking App', manager='Akinleye Tolu', start_date=datetime(2023,5,1).date(), end_date=datetime(2023,11,15).date(), status='active')
+            p3 = Project(name='CRM System', manager='Oluleye Philip', start_date=datetime(2023,1,10).date(), end_date=datetime(2023,7,31).date(), status='completed')
             db.session.add_all([p1,p2,p3])
         if not Resource.query.first():
-            r1 = Resource(name='Sarah Johnson', position='Project Manager', availability=0, current_project='E-commerce Platform')
-            r2 = Resource(name='Michael Chen', position='Senior Developer', availability=20, current_project='Mobile Banking App')
-            r3 = Resource(name='Emily Rodriguez', position='UX Designer', availability=0, current_project='CRM System')
+            r1 = Resource(name='Benjamin Godswill', position='Project Manager', availability=0, current_project='E-commerce Platform')
+            r2 = Resource(name='Akinleye Tolu', position='Senior Developer', availability=20, current_project='Mobile Banking App')
+            r3 = Resource(name='Oluleye Philip', position='UX Designer', availability=0, current_project='CRM System')
             db.session.add_all([r1,r2,r3])
         db.session.commit()
         print("Database initialized successfully!")
@@ -183,7 +183,7 @@ def api_get_reports():
     # simple mock reports list
     reports = [
         {'id':1,'name':'Q2 Resource Utilization','generatedBy':'System','createdAt':datetime.utcnow().isoformat(),'type':'Resource Utilization'},
-        {'id':2,'name':'Project Progress - May 2023','generatedBy':'Sarah Johnson','createdAt':datetime.utcnow().isoformat(),'type':'Project Progress'}
+        {'id':2,'name':'Project Progress - May 2023','generatedBy':'Benjamin Godswill','createdAt':datetime.utcnow().isoformat(),'type':'Project Progress'}
     ]
     return jsonify(success=True, data=reports)
 
@@ -249,12 +249,12 @@ HOME_HTML = r"""
     <div class="card" role="main">
       <div class="left" aria-hidden="true">
         <div class="brand"><div class="logo">DR</div><div>DevResource</div></div>
-        <h1>Smart human resources allocation for engineering teams</h1>
+        <h1> Human Resources Allocation for Software Developers </h1>
         <p>Assign the right people to the right projects, track utilization and spot bottlenecks before they affect delivery.</p>
         <ul>
-          <li><span class="badge">Projects</span> Manage and track project progress</li>
-          <li><span class="badge">Resources</span> View availability & allocation</li>
-          <li><span class="badge">Reports</span> Export utilization & performance reports</li>
+          <li><span class="badge">Projects</span> Manage and Track project progress</li>
+          <li><span class="badge">Resources</span> View Availability & Allocation</li>
+          <li><span class="badge">Reports</span> Export Utilization & Performance Reports</li>
         </ul>
       </div>
 
@@ -2018,27 +2018,27 @@ if __name__ == '__main__':
         db.create_all()
         # Create default data if it doesn't exist
         if not User.query.first():
-            u = User(name='John Doe', email='john@example.com', 
+            u = User(name='Babafemi Oyindamola', email='john@example.com', 
                     password_hash=generate_password_hash('password'), 
                     position='Project Manager')
             db.session.add(u)
         if not Project.query.first():
-            p1 = Project(name='E-commerce Platform', manager='John Doe', 
+            p1 = Project(name='E-commerce Platform', manager='Babafemi Oyindamola', 
                         start_date=datetime(2023,3,15).date(), 
                         end_date=datetime(2023,9,30).date(), status='active')
-            p2 = Project(name='Mobile Banking App', manager='Michael Chen', 
+            p2 = Project(name='Mobile Banking App', manager='Akinleye Tolu', 
                         start_date=datetime(2023,5,1).date(), 
                         end_date=datetime(2023,11,15).date(), status='active')
-            p3 = Project(name='CRM System', manager='Emily Rodriguez', 
+            p3 = Project(name='CRM System', manager='Oluleye Philip', 
                         start_date=datetime(2023,1,10).date(), 
                         end_date=datetime(2023,7,31).date(), status='completed')
             db.session.add_all([p1,p2,p3])
         if not Resource.query.first():
-            r1 = Resource(name='Sarah Johnson', position='Project Manager', 
+            r1 = Resource(name='Benjamin Godswill', position='Project Manager', 
                          availability=0, current_project='E-commerce Platform')
-            r2 = Resource(name='Michael Chen', position='Senior Developer', 
+            r2 = Resource(name='Akinleye Tolu', position='Senior Developer', 
                          availability=20, current_project='Mobile Banking App')
-            r3 = Resource(name='Emily Rodriguez', position='UX Designer', 
+            r3 = Resource(name='Oluleye Philip', position='UX Designer', 
                          availability=0, current_project='CRM System')
             db.session.add_all([r1,r2,r3])
         db.session.commit()
