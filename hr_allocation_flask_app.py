@@ -619,12 +619,6 @@ DASH_HTML = r"""
       gap: 24px;
     }
     
-    @media (max-width: 1024px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    
     .content-card {
       background: var(--card-bg);
       border-radius: 12px;
@@ -867,7 +861,76 @@ DASH_HTML = r"""
       color: var(--muted);
     }
     
-    /* Mobile Responsive */
+    /* Table Wrapper for Mobile Scrolling */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -15px;
+      padding: 0 15px;
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1001;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    
+    .close-sidebar {
+      display: none;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: var(--sidebar-text);
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1002;
+    }
+    
+    /* Utility Classes */
+    .mobile-only {
+      display: none;
+    }
+    
+    .desktop-only {
+      display: block;
+    }
+    
+    /* Enhanced Responsive Styles for Dashboard */
+    @media (max-width: 1200px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .resource-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+    
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
     @media (max-width: 768px) {
       .dashboard-container {
         flex-direction: column;
@@ -876,42 +939,248 @@ DASH_HTML = r"""
       .sidebar {
         width: 100%;
         padding: 16px;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+      }
+      
+      .sidebar.active {
+        left: 0;
       }
       
       .nav-links {
         display: flex;
-        overflow-x: auto;
+        flex-direction: column;
+        overflow-y: auto;
       }
       
       .nav-item {
-        margin-bottom: 0;
-        margin-right: 16px;
+        margin-bottom: 8px;
+        margin-right: 0;
       }
       
       .nav-link {
-        border-left: none;
-        border-bottom: 3px solid transparent;
+        border-left: 3px solid transparent;
+        border-bottom: none;
         white-space: nowrap;
+        padding: 15px 20px;
       }
       
       .nav-link:hover, .nav-link.active {
-        border-left-color: transparent;
-        border-bottom-color: var(--primary);
+        border-left-color: var(--primary);
+        border-bottom-color: transparent;
+      }
+      
+      .main-content {
+        margin-left: 0;
       }
       
       .content {
-        padding: 20px;
+        padding: 20px 15px;
       }
       
       .stats-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .resource-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .report-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .top-bar {
+        padding: 15px;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .user-info {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      /* Projects Page Mobile Fixes */
+      .card-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
       }
       
       .search-filter-bar {
         flex-direction: column;
+        gap: 12px;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      /* Table Responsiveness */
+      .data-table-container {
+        overflow-x: auto;
+        margin: 0 -15px;
+        padding: 0 15px;
+      }
+      
+      .data-table {
+        min-width: 600px;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 10px 8px;
+        font-size: 14px;
+      }
+      
+      /* Action buttons in tables */
+      .data-table .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      
+      /* Chart container fixes */
+      .chart-container {
+        height: 250px;
+        margin: 15px 0;
+      }
+      
+      /* Resource cards mobile optimization */
+      .resource-card {
+        padding: 15px;
+      }
+      
+      .resource-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+      
+      .resource-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+      
+      /* Modal responsiveness */
+      .modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+      }
+      
+      .modal-body {
+        padding: 0 20px;
+      }
+      
+      .modal-footer {
+        padding: 15px 20px 20px;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .modal-footer .btn {
+        width: 100%;
+      }
+      
+      .mobile-only {
+        display: block;
+      }
+      
+      .desktop-only {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: flex;
+      }
+      
+      .close-sidebar {
+        display: block;
       }
     }
-
+    
+    @media (max-width: 640px) {
+      #resources-page .resource-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .content {
+        padding: 15px 10px;
+      }
+      
+      .page-title {
+        font-size: 24px;
+      }
+      
+      .page-subtitle {
+        font-size: 14px;
+      }
+      
+      .stat-card {
+        padding: 20px 15px;
+      }
+      
+      .stat-value {
+        font-size: 28px;
+      }
+      
+      .content-card {
+        padding: 20px 15px;
+      }
+    }
+    
+    /* Projects Page Specific Responsive Fixes */
+    #projects-page .data-table {
+      width: 100%;
+    }
+    
+    #projects-page .data-table th:nth-child(3),
+    #projects-page .data-table td:nth-child(3),
+    #projects-page .data-table th:nth-child(4),
+    #projects-page .data-table td:nth-child(4) {
+      white-space: nowrap;
+    }
+    
+    /* Resources Page Specific Responsive Fixes */
+    #resources-page .resource-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    /* Reports Page Specific Responsive Fixes */
+    #reports-page .content-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    #reports-page .chart-container {
+      min-height: 250px;
+    }
+    
     /* Page Transitions */
     .page-content {
       opacity: 0;
@@ -923,7 +1192,7 @@ DASH_HTML = r"""
       opacity: 1;
       transform: translateY(0);
     }
-
+    
     /* Modal Styles */
     .modal-overlay {
       position: fixed;
@@ -938,7 +1207,7 @@ DASH_HTML = r"""
       z-index: 1000;
       padding: 20px;
     }
-
+    
     .modal-content {
       background: white;
       border-radius: 12px;
@@ -948,7 +1217,7 @@ DASH_HTML = r"""
       overflow-y: auto;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
-
+    
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -956,13 +1225,13 @@ DASH_HTML = r"""
       padding: 24px 24px 0;
       margin-bottom: 20px;
     }
-
+    
     .modal-header h3 {
       margin: 0;
       font-size: 20px;
       font-weight: 600;
     }
-
+    
     .modal-close {
       background: none;
       border: none;
@@ -976,11 +1245,11 @@ DASH_HTML = r"""
       align-items: center;
       justify-content: center;
     }
-
+    
     .modal-body {
       padding: 0 24px;
     }
-
+    
     .modal-footer {
       padding: 20px 24px 24px;
       display: flex;
@@ -989,18 +1258,18 @@ DASH_HTML = r"""
       border-top: 1px solid var(--border);
       margin-top: 20px;
     }
-
+    
     .form-group {
       margin-bottom: 20px;
     }
-
+    
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
       color: var(--dark);
     }
-
+    
     .form-group .input {
       width: 100%;
       padding: 12px;
@@ -1008,7 +1277,7 @@ DASH_HTML = r"""
       border-radius: 8px;
       font-size: 14px;
     }
-
+    
     .form-group .input:focus {
       outline: none;
       border-color: var(--primary);
@@ -1016,9 +1285,17 @@ DASH_HTML = r"""
   </style>
 </head>
 <body>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle mobile-only">
+    <i class="fas fa-bars"></i>
+  </button>
+
   <div class="dashboard-container">
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
+      <button class="close-sidebar mobile-only">
+        <i class="fas fa-times"></i>
+      </button>
       <div class="brand">
         <div class="logo">DR</div>
         <div class="brand-text">DevResource</div>
@@ -1066,7 +1343,7 @@ DASH_HTML = r"""
           <div class="avatar" id="user-avatar">JD</div>
           <button class="logout-btn" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
+            <span class="desktop-only">Logout</span>
           </button>
         </div>
       </header>
@@ -1088,8 +1365,10 @@ DASH_HTML = r"""
                 <h3 class="card-title">Recent Projects</h3>
                 <a href="#projects" class="view-all">View All</a>
               </div>
-              <div id="projects-area">
-                <!-- Projects will be populated by JavaScript -->
+              <div class="table-wrapper">
+                <div id="projects-area">
+                  <!-- Projects will be populated by JavaScript -->
+                </div>
               </div>
             </div>
 
@@ -1098,8 +1377,10 @@ DASH_HTML = r"""
                 <h3 class="card-title">Team Resources</h3>
                 <a href="#resources" class="view-all">View All</a>
               </div>
-              <div id="resources-area">
-                <!-- Resources will be populated by JavaScript -->
+              <div class="table-wrapper">
+                <div id="resources-area">
+                  <!-- Resources will be populated by JavaScript -->
+                </div>
               </div>
             </div>
           </div>
@@ -1114,7 +1395,7 @@ DASH_HTML = r"""
             </div>
             <button class="btn btn-primary" id="new-project-btn">
               <i class="fas fa-plus"></i>
-              New Project
+              <span class="desktop-only">New Project</span>
             </button>
           </div>
 
@@ -1132,21 +1413,23 @@ DASH_HTML = r"""
           </div>
 
           <div class="content-card">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Manager</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="projects-table">
-                <!-- Projects table will be populated by JavaScript -->
-              </tbody>
-            </table>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Project Name</th>
+                    <th class="desktop-only">Manager</th>
+                    <th>Start Date</th>
+                    <th class="desktop-only">End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="projects-table">
+                  <!-- Projects table will be populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -1159,7 +1442,7 @@ DASH_HTML = r"""
             </div>
             <button class="btn btn-primary" id="new-resource-btn">
               <i class="fas fa-user-plus"></i>
-              Add Resource
+              <span class="desktop-only">Add Resource</span>
             </button>
           </div>
 
@@ -1208,7 +1491,7 @@ DASH_HTML = r"""
             </div>
             <button class="btn btn-success" id="export-report-btn">
               <i class="fas fa-download"></i>
-              Export Report
+              <span class="desktop-only">Export Report</span>
             </button>
           </div>
 
@@ -1242,6 +1525,42 @@ DASH_HTML = r"""
   </div>
 
   <script>
+    // Mobile menu functionality
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const closeSidebar = document.querySelector('.close-sidebar');
+
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+    }
+
+    if (closeSidebar) {
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
+
+    // Close sidebar when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && 
+            sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) &&
+            !mobileMenuToggle.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    });
+
     // DOM Elements
     const pages = {
       dashboard: document.getElementById('dashboard-page'),
@@ -1408,7 +1727,7 @@ DASH_HTML = r"""
               <thead>
                 <tr>
                   <th>Project Name</th>
-                  <th>Manager</th>
+                  <th class="desktop-only">Manager</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -1416,7 +1735,7 @@ DASH_HTML = r"""
                 ${projects.data.slice(0, 5).map(project => `
                   <tr>
                     <td>${project.name}</td>
-                    <td>${project.manager || 'N/A'}</td>
+                    <td class="desktop-only">${project.manager || 'N/A'}</td>
                     <td>
                       <span class="status-badge ${project.status === 'active' ? 'status-active' : 'status-completed'}">
                         ${project.status.charAt(0).toUpperCase() + project.status.slice(1)}
@@ -1437,7 +1756,7 @@ DASH_HTML = r"""
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Position</th>
+                  <th class="desktop-only">Position</th>
                   <th>Availability</th>
                 </tr>
               </thead>
@@ -1450,7 +1769,7 @@ DASH_HTML = r"""
                   return `
                     <tr>
                       <td>${resource.name}</td>
-                      <td>${resource.position}</td>
+                      <td class="desktop-only">${resource.position}</td>
                       <td class="${availabilityClass}">${resource.availability}%</td>
                     </tr>
                   `;
@@ -1473,9 +1792,9 @@ DASH_HTML = r"""
           const projectsHtml = projects.data.map(project => `
             <tr>
               <td><strong>${project.name}</strong></td>
-              <td>${project.manager || 'N/A'}</td>
+              <td class="desktop-only">${project.manager || 'N/A'}</td>
               <td>${project.startDate ? new Date(project.startDate).toLocaleDateString() : 'N/A'}</td>
-              <td>${project.endDate ? new Date(project.endDate).toLocaleDateString() : 'N/A'}</td>
+              <td class="desktop-only">${project.endDate ? new Date(project.endDate).toLocaleDateString() : 'N/A'}</td>
               <td>
                 <span class="status-badge ${project.status === 'active' ? 'status-active' : 
                                        project.status === 'completed' ? 'status-completed' : 'status-planning'}">
@@ -1485,6 +1804,7 @@ DASH_HTML = r"""
               <td>
                 <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">
                   <i class="fas fa-edit"></i>
+                  <span class="desktop-only">Edit</span>
                 </button>
               </td>
             </tr>
@@ -1622,10 +1942,10 @@ DASH_HTML = r"""
                 </div>
                 <div style="margin-top: 16px; display: flex; gap: 8px;">
                   <button class="btn btn-secondary" style="flex: 1; padding: 8px; font-size: 12px;">
-                    <i class="fas fa-edit"></i> Edit
+                    <i class="fas fa-edit"></i> <span class="desktop-only">Edit</span>
                   </button>
                   <button class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 12px;">
-                    <i class="fas fa-chart-bar"></i> Details
+                    <i class="fas fa-chart-bar"></i> <span class="desktop-only">Details</span>
                   </button>
                 </div>
               </div>
@@ -1733,7 +2053,7 @@ DASH_HTML = r"""
                   ${new Date(report.createdAt).toLocaleDateString()}
                 </span>
                 <button class="btn btn-primary download-report" data-report-id="${report.id}" style="padding: 6px 12px; font-size: 12px;">
-                  <i class="fas fa-download"></i> Download
+                  <i class="fas fa-download"></i> <span class="desktop-only">Download</span>
                 </button>
               </div>
             </div>
